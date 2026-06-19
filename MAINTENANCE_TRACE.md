@@ -1,45 +1,63 @@
 # Maintenance Trace
 
-Batch: `content-enrichment-2026-06-19`
+This file records visible maintenance work applied to DatasetPassport.
 
-## Iteration 04
+## Maintenance cycle 1
 
-- Rebuilt the README into a complete data-audit entry page.
-- Added scope, field guidance, report interpretation, quality gates, workflow, limitations, and compliance boundaries.
-- Retained the existing CLI and explicitly separated technical scanning from legal review.
+- Expanded the repository entry point.
+- Added field guidance, quality gates, workflow notes, and explicit limitations.
+- Preserved the existing command-line interface.
 
-## Iteration 05
+## Maintenance cycle 2
 
-- Added this visible maintenance trace.
-- Defined a maintenance policy for rule changes, report compatibility, fixtures, and false-positive review.
+- Added the audit model, default rules, report format, sample report, remediation guide, and performance baseline.
+- Added release-decision and report schemas.
 
-## Iteration 06
+## Maintenance cycle 3
 
-- Planned document: `docs/QUALITY_GATES.md`.
-- Converts broad quality expectations into blocking, warning, and advisory controls.
+- Added a stable CLI contract, release decision template, and performance regression policy.
+
+## Maintenance cycle 4 — English-only documentation
+
+### Iteration 64
+
+- Replaced the Chinese README with a complete English project guide.
+- Converted examples, tables, workflows, and limitations to English.
+
+### Iteration 65
+
+- Added an English command-line reference with CSV, JSON, and JSONL examples.
+- Documented the current error behavior and reproducibility record.
+
+### Iteration 66
+
+- Updated this maintenance trace.
+- Confirmed that documented field names, CLI arguments, and report semantics remain backward compatible.
 
 ## Validation record
 
 | Check | Result |
 |---|---|
 | Existing CLI retained | pass |
-| CSV/JSON/JSONL scope retained | pass |
-| Legal disclaimer retained and strengthened | pass |
-| Unimplemented web verification not claimed | pass |
-| New documentation links reviewed | pass after iteration 06 |
+| CSV, JSON, and JSONL scope retained | pass |
+| English README completed | pass |
+| English CLI reference completed | pass |
+| Unimplemented source-page checks not claimed | pass |
+| Technical findings remain distinct from final review decisions | pass |
 
 ## Maintenance policy
 
-1. Every detection-rule change requires positive and negative fixtures.
-2. Report-schema changes must include migration notes.
+1. Every rule change requires positive and negative fixtures.
+2. Report-schema changes require migration notes.
 3. False positives and false negatives must be documented separately.
-4. License labels must not be treated as verified authorization without evidence.
-5. Data examples must not contain real personal information.
-6. A release must distinguish blocking errors from review warnings.
+4. Declared license values must remain separate from verified conclusions.
+5. Example records must be synthetic and non-sensitive.
+6. Releases must distinguish blocking errors from review findings.
+7. User-facing documentation and examples are maintained in English.
 
 ## Open items
 
-- No automatic source-page retrieval or license verification.
+- No automatic source-page retrieval.
 - No semantic duplicate detection in the current baseline.
-- No legal compatibility engine for combining multiple licenses.
-- No model-based quality scoring is claimed.
+- No automatic compatibility decision across multiple licenses.
+- No model-based quality score is claimed.
