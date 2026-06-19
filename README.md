@@ -1,64 +1,60 @@
 # DatasetPassport
 
-AI 训练数据集质量与合规风险扫描器。项目面向 CSV、JSON、JSONL 数据，在正式训练、交付或售卖前生成一份可复核的“数据集护照”：记录结构完整性、敏感信息命中、重复情况、来源与许可证复核状态。
+DatasetPassport is a local-first quality scanner for CSV, JSON, and JSONL datasets. It creates a structured review report before a dataset is used, delivered, or published.
 
-> 本工具提供技术扫描和风险提示，不提供法律意见，也不能替代人工抽样、授权核验或律师审查。
+> The report contains technical observations. It does not replace source review, manual sampling, or professional assessment.
 
-## 适用场景
+## Use cases
 
-- 中文 SFT、客服意图、情绪分类、阅读理解等训练集交付前检查
-- 企业内部数据资产入库前的基础质量门禁
-- 数据集版本迭代时的回归比较
-- 对外售卖数据包的审计材料准备
-- 开源数据二次加工时的来源、许可证和字段追踪
+- Check instruction, classification, support, sentiment, and reading-comprehension datasets
+- Add a basic quality gate before internal delivery
+- Compare dataset versions
+- Prepare machine-readable review records
+- Track source and license fields during data processing
 
-## 当前能力
+## Current capabilities
 
-- 支持 CSV、JSON、JSONL
-- 检测邮箱、手机号、身份证格式等常见敏感信息模式
-- 统计完全重复记录
-- 检查指定必填字段缺失
-- 记录数据规模、字段和扫描参数
-- 输出来源可追溯性与许可证复核提示
-- 生成结构化 JSON 报告，便于 CI 或后续审核系统读取
+- Read CSV, JSON, and JSONL
+- Count exact normalized duplicates
+- Check required fields
+- Detect selected identifier-like text patterns
+- Measure source-field coverage
+- Record the declared license value
+- Write a JSON report for automation and human review
 
-## 快速开始
+## Requirements
 
-### 环境
+- Python 3.10 or newer
+- No paid API
 
-- Python 3.10 或更高版本
-- 默认不要求付费 API
-
-### 运行
+## Run
 
 ```bash
 python main.py data.jsonl --required instruction,output,source --license apache-2.0 -o report.json
 ```
 
-### 测试
+## Test
 
 ```bash
 python -m unittest -v
 ```
 
-## 输入建议
+## Recommended fields
 
-推荐每条记录至少保留以下信息：
-
-| 字段 | 用途 |
+| Field | Purpose |
 |---|---|
-| `id` | 稳定标识，便于去重和版本追踪 |
-| `instruction` / `text` | 任务输入或原始文本 |
-| `output` / `label` | 目标输出或标签 |
-| `source` | 来源名称、数据集名称或内部批次号 |
-| `license` | 许可证标识 |
-| `source_url` | 可选的公开来源定位信息 |
-| `created_at` | 可选的加工时间 |
-| `processing_version` | 可选的清洗或翻译流水线版本 |
+| `id` | stable record identifier |
+| `instruction` or `text` | input content |
+| `output` or `label` | expected result |
+| `source` | source or batch name |
+| `license` | declared license value |
+| `source_url` | optional source locator |
+| `created_at` | optional processing date |
+| `processing_version` | optional pipeline version |
 
-缺失字段应使用明确的空值策略，不建议用“未知”“无”混合代替 `null`。
+Use one documented missing-value strategy. Avoid mixing empty strings, placeholder words, and `null` without a clear rule.
 
-## 命令说明
+## Command reference
 
 ```bash
 python main.py <input> \
@@ -67,62 +63,59 @@ python main.py <input> \
   -o report.json
 ```
 
-- `<input>`：待扫描的 CSV、JSON 或 JSONL 文件
-- `--required`：逗号分隔的必填字段
-- `--license`：本批次声明的许可证，用于生成复核提示
-- `-o`：报告输出路径
+- `<input>`: dataset file
+- `--required`: comma-separated field names
+- `--license`: declared license for the reviewed batch
+- `-o`: output report path
 
-## 报告应该如何解读
+## Report interpretation
 
-扫描结果用于回答四类问题：
+The report helps answer:
 
-1. **结构是否完整**：必填字段是否存在，格式是否可解析。
-2. **数据是否干净**：是否存在完全重复、空值异常或明显格式问题。
-3. **是否可能含敏感信息**：正则模式是否命中邮箱、手机号、证件号码等。
-4. **来源是否可追溯**：是否记录来源和许可证，是否仍需人工核验授权范围。
+1. Can the file be parsed?
+2. Are required fields complete?
+3. Are exact duplicates present?
+4. Did configured text patterns match?
+5. Are source and license fields available for review?
 
-敏感信息规则可能误报或漏报。任何命中都应回到原始记录人工确认，不应只凭数量直接删除数据。
+Pattern checks are indicators. Review matching records in context.
 
-## 推荐质量门禁
+## Suggested gates
 
-| 门禁 | 建议处理 |
+| Finding | Suggested action |
 |---|---|
-| 文件无法解析 | 阻断交付 |
-| 必填字段缺失 | 阻断或退回修复 |
-| 敏感信息命中 | 人工复核，必要时脱敏或删除 |
-| 完全重复 | 评估任务需要后去重 |
-| 来源为空 | 阻断对外发布 |
-| 许可证不明确 | 暂停商用，补充授权证据 |
-| 训练集和测试集 ID 重叠 | 阻断评测 |
+| Parsing failure | stop the workflow |
+| Missing required field | correct the dataset and rerun |
+| Pattern match | inspect the matching record |
+| Exact duplicate | decide whether repetition is intentional |
+| Missing source | complete the source record |
+| Unclear license value | review the original terms |
+| Split overlap | correct the split before evaluation |
 
-## 推荐工作流
+## Recommended workflow
 
-1. 固化原始文件校验值并设置只读副本。
-2. 对加工后的版本运行 DatasetPassport。
-3. 按报告定位问题记录并执行修复。
-4. 重新扫描，保存修复前后两份报告。
-5. 人工抽样检查语义质量、标签正确性和授权证据。
-6. 将报告、Schema、许可证、来源清单和版本说明一起交付。
+1. Record the input checksum.
+2. Run DatasetPassport.
+3. Review and correct findings.
+4. Run the scan again.
+5. Keep the before-and-after reports.
+6. Deliver the report, schema, source inventory, and version notes together.
 
-## 安全与合规边界
+## Documentation
 
-- 正则命中不等于确认存在个人信息。
-- 未命中不等于数据完全安全。
-- 开源可访问不等于允许商业再分发。
-- 许可证兼容性、署名、数据库权利和地域法规需单独核验。
-- 不建议把来源不明、含用户账号标识或需登录获取的数据用于商业数据产品。
-
-## 文档
-
+- [Audit Model](docs/AUDIT_MODEL.md)
+- [Report Format](docs/REPORT_FORMAT.md)
+- [Remediation Guide](docs/REMEDIATION_GUIDE.md)
+- [Performance Baseline](docs/PERFORMANCE_BASELINE.md)
 - [Quality Gates](docs/QUALITY_GATES.md)
 - [Maintenance Trace](MAINTENANCE_TRACE.md)
 
-## 已知限制
+## Known limitations
 
-- 当前重点是结构与规则扫描，不评估事实正确性、指令质量或模型训练价值。
-- 不自动访问来源网页核验许可证。
-- 不自动判断不同许可证之间的兼容性。
-- 不替代人工语义去重、毒性检测和偏差评估。
+- The current release focuses on structure and configured rules.
+- It does not visit source websites.
+- It does not decide whether two licenses are compatible.
+- It does not replace semantic review or near-duplicate analysis.
 
 ## License
 
