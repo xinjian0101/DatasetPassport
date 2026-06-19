@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "profile": "default",
+  "record_limits": {
+    "maximum_record_bytes": 1048576,
+    "maximum_nested_depth": 20
+  },
+  "required_field_policy": {
+    "empty_values": [null, "", []],
+    "case_sensitive": true
+  },
+  "privacy_rules": [
+    {
+      "id": "email",
+      "enabled": true,
+      "severity": "medium",
+      "action": "review"
+    },
+    {
+      "id": "phone_cn",
+      "enabled": true,
+      "severity": "medium",
+      "action": "review"
+    },
+    {
+      "id": "id_cn",
+      "enabled": true,
+      "severity": "high",
+      "action": "block_release"
+    }
+  ],
+  "duplicate_rules": {
+    "exact_normalized_record": true,
+    "warning_rate": 0.05,
+    "blocking_rate": 0.20
+  },
+  "provenance_fields": ["source", "source_url", "license", "provenance"],
+  "report": {
+    "include_rule_version": true,
+    "include_input_path": false,
+    "include_matching_values": false
+  }
+}
