@@ -4,14 +4,25 @@
 
 ### Added
 
+- Versioned audit reports with generation timestamps.
+- SHA-256 input checksums and input-format metadata.
+- Per-field coverage reporting.
+- Exact cross-file overlap analysis through `--compare`.
+- Reusable record fingerprint helpers.
+- Validation for non-object JSON array entries.
+- Tests for checksums, coverage, overlap rates, and invalid records.
 - Technical audit model and severity guidance.
 - Versioned rule profile under `rules/default-rules.json`.
 - CSV, JSON, and JSONL input support.
-- Exact normalized-record duplicate detection.
 - Required-field completeness reporting.
 - Privacy-pattern findings for selected identifiers.
 - Provenance coverage indicator.
-- GitHub Actions test workflow and a public roadmap issue.
+
+### Changed
+
+- JSONL parsing now reports malformed line numbers consistently.
+- Reports use the input filename rather than an absolute local path.
+- Exact duplicate detection and cross-file comparison share one canonical normalization function.
 
 ### Security and privacy notes
 
@@ -22,6 +33,7 @@
 
 ### Known limitations
 
+- Cross-file comparison detects exact normalized overlap only.
 - Near-duplicate and semantic overlap detection are not implemented.
 - Parquet support is not included in the standard-library MVP.
 - License strings are not validated against source terms.
@@ -35,5 +47,6 @@ Initial executable dataset audit MVP.
 
 - Rule changes require a rule-profile version update.
 - New privacy patterns require positive, negative, and boundary fixtures.
-- Reports must distinguish observations from legal conclusions.
+- Reports must distinguish observations from final review conclusions.
 - Performance changes must be tested on representative record counts.
+- Report-schema changes require migration notes and tests.
