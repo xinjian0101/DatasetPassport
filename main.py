@@ -108,7 +108,7 @@ def audit(path: str, required_fields: list[str] | None = None, declared_license:
     risk = "high" if findings > 20 else "medium" if findings else "low"
     coverage = {field: round(count / total, 4) if total else 0.0 for field, count in sorted(fields.items())}
 
-    return {
+    report = {
         "report_version": REPORT_VERSION,
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "input": {
@@ -133,12 +133,96 @@ def audit(path: str, required_fields: list[str] | None = None, declared_license:
         "source_traceability": round(traceability, 4),
         "commercial_use": "review_required" if not declared_license else "verify_license_terms",
     }
+    report["review_status"] = report_status(report)
+    return report
+
+
+def report_status(report: dict) -> str:
+    if any(int(value) > 0 for value in report.get("missing_required", {}).values()):
+        return "blocking"
+    if report.get("duplicate_records", 0) or sum(report.get("pii_findings", {}).values()):
+        return "review"
+    if not report.get("declared_license"):
+        return "review"
+    return "pass"
+
+
+def infer_report_format(path: str, requested: str | None = None) -> str:
+    if requested:
+        return requested
+    return "markdown" if Path(path).suffix.lower() in {".md", ".markdown"} else "json"
+
+
+def render_markdown(report: dict) -> str:
+    lines = [
+        "# Dataset Passport",
+        "",
+        f"- Review status: **{report.get('review_status', report_status(report))}**",
+        f"- Records: {report.get('records', 0)}",
+        f"- Unique records: {report.get('unique_records', 0)}",
+        f"- Exact duplicates: {report.get('duplicate_records', 0)}",
+        f"- Duplicate rate: {report.get('duplicate_rate', 0)}",
+        f"- Source traceability: {report.get('source_traceability', 0)}",
+        f"- Declared license: {report.get('declared_license') or 'not provided'}",
+        f"- Pattern risk: {report.get('pii_risk', 'unknown')}",
+        "",
+        "## Missing required fields",
+        "",
+    ]
+    missing = report.get("missing_required", {})
+    if missing:
+        lines.extend(["| Field | Missing records |", "|---|---:|"])
+        lines.extend(f"| {field} | {count} |" for field, count in sorted(missing.items()))
+    else:
+        lines.append("No missing required fields were reported.")
+
+    lines.extend(["", "## Pattern findings", ""])
+    findings = report.get("pii_findings", {})
+    if findings:
+        lines.extend(["| Pattern | Matches |", "|---|---:|"])
+        lines.extend(f"| {name} | {count} |" for name, count in sorted(findings.items()))
+    else:
+        lines.append("No configured pattern findings were reported.")
+
+    comparison = report.get("comparison")
+    if comparison:
+        lines.extend([
+            "",
+            "## Dataset comparison",
+            "",
+            f"- Other file: {comparison.get('other_file')}",
+            f"- Exact overlap records: {comparison.get('exact_overlap_records', 0)}",
+            f"- Overlap rate of smaller set: {comparison.get('overlap_rate_of_smaller_set', 0)}",
+        ])
+
+    lines.extend([
+        "",
+        "## Reproducibility",
+        "",
+        f"- Report version: {report.get('report_version')}",
+        f"- Generated at: {report.get('generated_at')}",
+        f"- Input checksum: `{report.get('input', {}).get('checksum', '')}`",
+    ])
+    return "\n".join(lines) + "\n"
+
+
+def write_report(report: dict, path: str, output_format: str | None = None) -> None:
+    output_format = infer_report_format(path, output_format)
+    target = Path(path)
+    if output_format == "json":
+        target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return
+    if output_format == "markdown":
+        target.write_text(render_markdown(report), encoding="utf-8")
+        return
+    raise ValueError(f"Unsupported report format: {output_format}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit an AI dataset.")
     parser.add_argument("dataset")
     parser.add_argument("-o", "--output", default="dataset-passport.json")
+    parser.add_argument("--format", choices=("json", "markdown"))
     parser.add_argument("--required", default="")
     parser.add_argument("--license", dest="declared_license")
     parser.add_argument("--compare", help="Optional second dataset for exact cross-file overlap analysis")
@@ -147,7 +231,7 @@ def main() -> None:
     report = audit(args.dataset, required, args.declared_license)
     if args.compare:
         report["comparison"] = compare_datasets(args.dataset, args.compare)
-    Path(args.output).write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_report(report, args.output, args.format)
     print(f"Wrote audit report to {args.output}")
 
 
