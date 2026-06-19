@@ -1,0 +1,32 @@
+{
+  "decision_version": 1,
+  "dataset": {
+    "name": "replace-with-dataset-name",
+    "version": "replace-with-dataset-version",
+    "checksum_algorithm": "sha256",
+    "checksum": "replace-with-checksum"
+  },
+  "audit": {
+    "scanner_commit": "replace-with-commit-sha",
+    "rule_profile": "default-v1",
+    "report_checksum": "replace-with-report-checksum",
+    "completed_at": "2026-06-19T00:00:00Z"
+  },
+  "findings": {
+    "blocking": [],
+    "accepted": [],
+    "deferred": []
+  },
+  "remediation": {
+    "summary": "replace-with-summary",
+    "changed_record_count": 0,
+    "removed_record_count": 0,
+    "recheck_completed": false
+  },
+  "approval": {
+    "status": "pending",
+    "reviewer": "replace-with-reviewer",
+    "approved_at": null,
+    "notes": []
+  }
+}
