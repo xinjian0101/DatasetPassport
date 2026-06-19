@@ -1,0 +1,40 @@
+{
+  "report_version": 1,
+  "scanner_version": "0.1.0",
+  "generated_at": "2026-06-19T00:00:00Z",
+  "input": {
+    "format": "jsonl",
+    "checksum_algorithm": "sha256",
+    "checksum": "replace-with-real-checksum"
+  },
+  "configuration": {
+    "required_fields": ["instruction", "output", "source"],
+    "declared_license": "MIT",
+    "rule_profile": "default-v1"
+  },
+  "summary": {
+    "records": 2,
+    "unique_records": 2,
+    "duplicate_records": 0,
+    "duplicate_rate": 0.0,
+    "source_traceability": 1.0
+  },
+  "findings": {
+    "missing_required": {},
+    "pii_findings": {
+      "email": 0,
+      "phone_cn": 0,
+      "id_cn": 0
+    },
+    "pii_risk": "low",
+    "commercial_use": "verify_license_terms"
+  },
+  "review": {
+    "status": "manual_review_required",
+    "notes": [
+      "Confirm that the declared license applies to every source record.",
+      "Review a sample of records for semantic quality and hidden personal data.",
+      "Do not treat this technical report as legal advice."
+    ]
+  }
+}
