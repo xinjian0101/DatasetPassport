@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DatasetPassport Audit Report",
+  "type": "object",
+  "required": ["report_version", "scanner_version", "summary", "findings", "review"],
+  "properties": {
+    "report_version": {"type": "integer", "minimum": 1},
+    "scanner_version": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string"},
+    "input": {
+      "type": "object",
+      "properties": {
+        "format": {"type": "string"},
+        "checksum_algorithm": {"type": "string"},
+        "checksum": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "configuration": {"type": "object"},
+    "summary": {
+      "type": "object",
+      "required": ["records", "unique_records", "duplicate_records", "duplicate_rate"],
+      "properties": {
+        "records": {"type": "integer", "minimum": 0},
+        "unique_records": {"type": "integer", "minimum": 0},
+        "duplicate_records": {"type": "integer", "minimum": 0},
+        "duplicate_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "source_traceability": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "findings": {"type": "object"},
+    "review": {"type": "object"}
+  },
+  "additionalProperties": true
+}
