@@ -1,0 +1,67 @@
+name: Feature request
+description: Propose a reader, audit rule, report, comparison, or release-workflow improvement
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start with the data-quality problem. Proposals must preserve local processing, synthetic fixtures, and the separation between findings and final decisions.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      options:
+        - Input format
+        - Required-field rules
+        - Duplicate analysis
+        - Pattern findings
+        - Split comparison
+        - Provenance coverage
+        - Report schema
+        - Export format
+        - Release decision workflow
+        - Performance
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: Describe the dataset workflow and current failure mode.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Define expected input, output, report fields, and failure behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal synthetic fixture
+      render: json
+  - type: textarea
+    id: risks
+    attributes:
+      label: False-positive, false-negative, privacy, and compatibility risks
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Project-boundary checks
+      options:
+        - label: The proposal can be tested with synthetic data.
+          required: true
+        - label: Reports will not expose matched private values by default.
+          required: true
+        - label: Declared source terms remain separate from review conclusions.
+          required: true
