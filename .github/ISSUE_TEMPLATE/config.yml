@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project overview
+    url: https://github.com/xinjian0101/DatasetPassport/blob/main/ABOUT.md
+    about: Review the mission, audit boundaries, architecture, and maturity before opening an issue.
+  - name: Audit and remediation guides
+    url: https://github.com/xinjian0101/DatasetPassport/tree/main/docs
+    about: Read the report, quality-gate, remediation, and CLI documentation.
