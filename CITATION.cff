@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use DatasetPassport, cite this repository and the exact commit used."
+title: "DatasetPassport"
+type: software
+authors:
+  - name: "xinjian0101"
+repository-code: "https://github.com/xinjian0101/DatasetPassport"
+url: "https://github.com/xinjian0101/DatasetPassport/blob/main/ABOUT.md"
+license: MIT
+keywords:
+  - dataset quality
+  - data validation
+  - provenance
+  - duplicate detection
+  - audit reports
+abstract: "A local-first dataset scanner that produces reproducible reports for structure, duplicates, overlap, provenance coverage, and release review."
