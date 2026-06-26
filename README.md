@@ -136,6 +136,13 @@ release decision record
 | `test_*.py` | Audit, overlap, and report tests |
 | `ABOUT.md` | Mission, maturity, boundaries, and governance |
 
+## Support & Security
+
+- 📖 See [About](ABOUT.md) for scope
+- 🐛 Use Issue templates for reproducible bugs
+- 💡 Use Feature requests for improvements
+- 🔐 Security policy in SECURITY.md
+
 ## Project boundaries
 
 - No source-site crawling
